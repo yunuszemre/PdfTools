@@ -1,5 +1,5 @@
-﻿using DinkToPdf;
-using Newtonsoft.Json;
+﻿using HtmlRendererCore.PdfSharp;
+using PdfSharpCore;
 
 internal class Program
 {
@@ -8,52 +8,37 @@ internal class Program
         int num = 0;
         while (true)
         {
-            HtmlToPdfSharp("dockercomposetest", $"id {num}", "test", "test", "Detaysoft", @"C:\Users\P2710\Desktop\logs");
+            HtmlToPdf();
             num++;
+
+            if (num == 1)
+                break;
         }
+        while (true)
+        {
+
+        };
     }
-    public static string HtmlToPdfSharp(string documentTitle, string documentId, string documentSubject, string documentContent, string companyName, string path)
+    private static void HtmlToPdf()
     {
+
         try
         {
-            var pdfFiles = path;
+            var htmlContent = "<html><body><h1>Hello, World!</h1></body></html>";
+            var filePath = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.pdf";
+            //if (!Directory.Exists(filePath))
+            //    Directory.CreateDirectory(filePath);
+            var pdfDocument = PdfGenerator.GeneratePdf(htmlContent, PageSize.A4);
 
-            if (!Directory.Exists(pdfFiles))
-                Directory.CreateDirectory(pdfFiles);
-
-            var pdfText = $"<h1>{documentTitle}</h1><h3>{documentSubject}</h3><p>{documentContent}</p>";
-
-            var converter = new SynchronizedConverter(new PdfTools());
-
-            var doc = new HtmlToPdfDocument()
-            {
-                GlobalSettings = new GlobalSettings
-                {
-                    ColorMode = DinkToPdf.ColorMode.Color,
-                    Orientation = Orientation.Portrait,
-                    PaperSize = PaperKind.A4,
-                    Out = Path.Combine(pdfFiles, documentId + documentTitle + ".pdf")
-                },
-                Objects = {
-                new ObjectSettings
-                {
-                    PagesCount = true,
-                    HtmlContent = pdfText,
-                    WebSettings = { DefaultEncoding = "utf-8" }
-                }
-            }
-            };
-
-            converter.Convert(doc);
-
-            var savePath = Path.Combine(pdfFiles, documentId + documentTitle + ".pdf");
-            return savePath;
+            pdfDocument.Save(filePath);
         }
         catch (Exception ex)
         {
-            Console.Out.WriteLine(JsonConvert.SerializeObject(ex));
-            Console.WriteLine($"An error occurred while converting HTML to PDF: {ex}");
-            return "";
+            var a = new Exception(ex.Message);
+            throw a;
         }
+
+
     }
+    
 }
